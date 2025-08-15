@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Comentarios a Tareas | Violeta Workspace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { background: #f7f7fb; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; color: #23243a;}
+        .main-header { background: #fff; border-radius: 0 0 18px 18px; box-shadow: 0 2px 16px #a091df18;
+            padding: 1.3rem 2.5rem 1.1rem 2.5rem; margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #ede7fb;}
+        .header-title { font-weight: 700; color: #7C3AED; font-size: 2rem;}
+        .btn-dashboard {
+            background: linear-gradient(90deg, #7C3AED 70%, #6B21A8 100%);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 9px;
+            padding: 0.56em 1.4em;
+            font-size: 1.08rem;
+            box-shadow: 0 2px 8px #d1bfff1a;
+            transition: background 0.15s;
+        }
+        .btn-dashboard:hover { background: #6B21A8; color: #fff; }
+        .container-main { display: flex; gap: 2.4rem; align-items: flex-start; padding: 2.5rem 1rem; max-width: 1700px; margin: 0 auto;}
+        .card-form { background: #fff; border-radius: 16px; box-shadow: 0 4px 16px #a091df22; padding: 2.2rem 2.5rem; width: 420px;}
+        .card-form h3 { font-weight: 700; color: #7C3AED; margin-bottom: 1.5em; text-align: center;}
+        .form-label { margin-top: 1em; font-weight: 500; color: #6B21A8;}
+        .form-control, .form-select { margin-bottom: 0.7em; border-radius: 9px; border: 1.5px solid #dbdbf7; padding: 0.63em 1em;}
+        .kanban-panel { flex: 1; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px #bcb5eb21; padding: 2.2rem 2.1rem;}
+        .kanban-panel h4 { color: #7C3AED; font-weight: 700; margin-bottom: 1.4em;}
+        .cabecera-tarea { background:#ece7fa; border-left:6px solid #7C3AED; border-radius: 10px; padding: 1.3em 1.4em 1.1em 1.4em; margin-bottom: 1.7em;}
+        .cabecera-tarea .titulo { font-weight:700;font-size:1.2em; margin-bottom: 0.3em;}
+        .cabecera-tarea .descripcion { font-size:1em; margin-bottom: 0.6em;}
+        .cabecera-tarea .fecha { font-size:.97em; color: #6B21A8;}
+        .comentario-card { background: #f6f1fd; border-left: 8px solid #7C3AED; border-radius: 9px; padding: 1em 1.5em 0.8em 1.5em; margin-bottom: 1em; box-shadow: 0 2px 8px #d6ccff2c;}
+        .comentario-meta { font-size: .97em; color: #8f7ac4; margin-bottom: .18em;}
+        .comentario-contenido { margin-top: 0.6em; font-size: 1em;}
+        .adjunto-link { font-size: .94em; color: #6B21A8;}
+        .adjunto-img { max-height:38px; max-width:75px; border-radius:6px; vertical-align:middle; margin-right:4px; box-shadow:0 2px 10px #0001;}
+        .badge { font-size: .86em; }
+        .estado-bar { display: inline-block; min-width: 110px; font-weight: bold; padding: .24em 1em; border-radius: 9px; }
+        .comentario-fecha { font-size: .97em; color: #7C3AED; font-weight: 500; margin-left: 0.7em; }
+    </style>
+</head>
+<body>
+<div class="main-header">
+    <div class="header-title"><i class="bi bi-chat-left-text"></i> Seguimiento de Tarea / Tickets</div>
+    <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-dashboard">
+        <i class="bi bi-arrow-left"></i> Volver al Dashboard
+    </a>
+</div>
+<div class="container-main">
+    <!-- PANEL NUEVO COMENTARIO -->
+    <form class="card-form" method="POST" enctype="multipart/form-data">
+        <h3><i class="bi bi-plus-circle"></i> Nuevo Comentario</h3>
+        <label class="form-label" for="proyecto">Proyecto</label>
+        <select class="form-select" id="proyecto" name="proyecto" onchange="filtrarTareasPorProyecto(this.value)" required>
+            <option value="">Seleccionar proyecto</option>
+            {% for proyecto in proyectos %}
+                <option value="{{ proyecto.idproyecto }}" {% if idproyecto and proyecto.idproyecto == idproyecto %}selected{% endif %}>{{ proyecto.nombre_proyecto }}</option>
+            {% endfor %}
+        </select>
+        <label class="form-label" for="idtarea">Tarea</label>
+        <select class="form-select" id="idtarea" name="idtarea" required>
+            <option value="">Seleccionar tarea</option>
+            {% for tarea in tareas %}
+                <option value="{{ tarea.idtarea }}" {% if idtarea and tarea.idtarea == idtarea %}selected{% endif %}>{{ tarea.titulo }}</option>
+            {% endfor %}
+        </select>
+        {% if tarea_sel %}
+            <label class="form-label" for="idestado">Estado de la tarea</label>
+            <select class="form-select" id="idestado" name="idestado">
+                {% for estado in estados %}
+                    <option value="{{ estado.idestado }}" {% if tarea_sel.idestado == estado.idestado %}selected{% endif %}>{{ estado.nombre_estado }}</option>
+                {% endfor %}
+            </select>
+            <label class="form-label">Estado actual:</label>
+            <div class="mb-2">
+                <span class="estado-bar" style="background: {{ tarea_sel.estado.color if tarea_sel.estado else '#d3bfff' }};">
+                    {{ tarea_sel.estado.nombre_estado if tarea_sel.estado else 'Sin Estado' }}
+                </span>
+            </div>
+        {% endif %}
+        <label class="form-label" for="fecha">Fecha del comentario</label>
+        <input type="datetime-local" class="form-control" id="fecha" name="fecha"
+            value="{{ now|default('', true) }}" required>
+        <label class="form-label" for="comentario">Comentario</label>
+        <textarea class="form-control" id="comentario" name="comentario" rows="3" required></textarea>
+        <!-- Input para archivo adjunto (nuevo y fundamental) -->
+        <label class="form-label" for="adjunto">Adjunto (opcional)</label>
+        <input type="file" class="form-control" id="adjunto" name="adjunto" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt">
+        <button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-send"></i> Registrar comentario</button>
+    </form>
+
+    <!-- PANEL HISTORIAL DE COMENTARIOS Y CABECERA DE TAREA -->
+    <div class="kanban-panel">
+        <h4>
+            <i class="bi bi-list-ul"></i> Historial de Comentarios
+            {% if tarea_sel %}- {{ tarea_sel.titulo }}{% endif %}
+        </h4>
+        {% if tarea_sel %}
+            <!-- CABECERA DE LA TAREA SELECCIONADA -->
+            <div class="cabecera-tarea">
+                <div class="titulo"><i class="bi bi-flag"></i> {{ tarea_sel.titulo }}</div>
+                <div class="descripcion">{{ tarea_sel.descripcion }}</div>
+                <div class="fecha">
+                    <i class="bi bi-calendar"></i>
+                    Creada el {{ tarea_sel.fecha_creacion.strftime('%d-%m-%Y %H:%M') if tarea_sel.fecha_creacion else '' }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <span class="estado-bar" style="background: {{ tarea_sel.estado.color if tarea_sel.estado else '#d3bfff' }};">
+                    Estado actual: {{ tarea_sel.estado.nombre_estado if tarea_sel.estado else 'Sin Estado' }}
+                </span>
+            </div>
+        {% endif %}
+        {% if comentarios %}
+            {% for coment in comentarios %}
+            <div class="comentario-card">
+                <div class="comentario-meta">
+                    <i class="bi bi-person-circle"></i>
+                    <b>
+                    {% for usuario in usuarios %}
+                        {% if usuario.idusuario == coment.idusuario %}
+                            {{ usuario.nombre }}
+                        {% endif %}
+                    {% endfor %}
+                    </b>
+                    <span class="comentario-fecha">
+                        <i class="bi bi-clock"></i>
+                        {{ coment.fecha.strftime('%d-%m-%Y %H:%M') if coment.fecha else '' }}
+                    </span>
+                    <span class="badge bg-light text-dark ms-2">#{{ coment.idcomentario }}</span>
+                    {% if coment.estado %}
+                        <span class="badge" style="background: {{ coment.estado.color }};">{{ coment.estado.nombre_estado }}</span>
+                    {% endif %}
+                </div>
+                <div class="comentario-contenido">{{ coment.comentario }}</div>
+                {% if coment.idadjunto and coment.adjunto %}
+                    <div class="mt-2">
+                        {% set tipo = coment.adjunto.tipo or '' %}
+                        {% set es_imagen = 'image' in tipo %}
+                        {% set es_pdf = tipo == 'application/pdf' %}
+                        {% set es_word = tipo in ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'] %}
+                        {% set es_excel = tipo in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'] %}
+                        <span class="badge bg-light text-dark">
+                            <i class="bi bi-paperclip"></i> Archivo adjunto:
+                        </span>
+                        {% if es_imagen %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver imagen">
+                                <img src="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" alt="Imagen adjunta" class="adjunto-img">
+                            </a>
+                        {% elif es_pdf %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver PDF">
+                                <i class="bi bi-file-pdf text-danger" style="font-size:1.45em;"></i> PDF
+                            </a>
+                        {% elif es_word %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver Word">
+                                <i class="bi bi-file-earmark-word text-primary" style="font-size:1.45em;"></i> Word
+                            </a>
+                        {% elif es_excel %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver Excel">
+                                <i class="bi bi-file-earmark-excel text-success" style="font-size:1.45em;"></i> Excel
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver/Descargar">
+                                <i class="bi bi-file-earmark" style="font-size:1.4em;"></i> Archivo
+                            </a>
+                        {% endif %}
+                        <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}"
+                            class="btn btn-outline-secondary btn-sm ms-2" target="_blank" title="Descargar adjunto">
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-secondary">No hay comentarios para esta tarea.</p>
+        {% endif %}
+    </div>
+</div>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1200">
+      <div class="toast align-items-center text-bg-success show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi bi-check-circle-fill"></i> {{ messages[0] }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endwith %}
+<script>
+    function filtrarTareasPorProyecto(idproyecto) {
+        window.location.href = "?idproyecto=" + idproyecto;
+    }
+    document.getElementById('idtarea').addEventListener('change', function() {
+        var idproyecto = document.getElementById('proyecto').value;
+        window.location.href = "?idproyecto=" + idproyecto + "&idtarea=" + this.value;
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

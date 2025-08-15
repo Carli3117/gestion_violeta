@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión | Gestion de Proyectos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      :root {
+        --odoo-violet: #875A7B;
+        --odoo-violet-dark: #6c4562;
+        --odoo-violet-light: #e9e6ee;
+        --odoo-gray: #f8f8fa;
+        --odoo-accent: #ffab00;
+      }
+      body {
+        background: linear-gradient(120deg, var(--odoo-violet) 0%, var(--odoo-violet-light) 100%);
+        font-family: 'Segoe UI', 'Arial', sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .login-box {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 32px #875a7b22;
+        padding: 2rem 1.5rem 1.3rem;
+        width: 350px;
+        max-width: 82vw;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+      }
+      .login-title {
+        font-size: 1.35rem;
+        color: var(--odoo-violet);
+        font-weight: 900;
+        letter-spacing: 1px;
+        margin-bottom: .2rem;
+        text-align: center;
+        text-shadow: 0 1px 0 #e3d6e3;
+      }
+      .login-box input {
+        width: 100%;
+        padding: 7px 1px;
+        border: 1.2px solid var(--odoo-violet-light);
+        border-radius: 7px;
+        font-size: 1rem;
+        background: var(--odoo-gray);
+        margin-bottom: 0.5rem;
+        outline: none;
+        transition: border 0.2s;
+      }
+      .login-box input:focus {
+        border: 1.5px solid var(--odoo-violet);
+        background: #fff;
+      }
+      .login-btn {
+        background: var(--odoo-violet);
+        color: #fff;
+        padding: 10px 0;
+        border: none;
+        border-radius: 7px;
+        font-size: 1.08rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 8px #bba4bb14;
+        transition: background 0.17s;
+        letter-spacing: 0.5px;
+      }
+      .login-btn:hover {
+        background: var(--odoo-violet-dark);
+      }
+      .login-error {
+        background: var(--odoo-violet-light);
+        color: #b33636;
+        border-radius: 6px;
+        padding: 7px 12px;
+        text-align: center;
+        font-size: .95rem;
+        margin-bottom: 0.5rem;
+        border: 1px solid #f5d6d6;
+      }
+      @media (max-width: 500px) {
+        .login-box { padding: 1.1rem 0.7rem; width: 96vw; }
+      }
+    </style>
+</head>
+<body>
+    <form class="login-box" method="POST" action="{{ url_for('usuario.login') }}">
+        <div class="login-title">Gestion de Proyectos</div>
+        {% if error %}
+            <div class="login-error">{{ error }}</div>
+        {% endif %}
+        <input type="email" name="correo" placeholder="Correo electrónico" required autofocus>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <button class="login-btn" type="submit">Iniciar sesión</button>
+    </form>
+</body>
+</html>
