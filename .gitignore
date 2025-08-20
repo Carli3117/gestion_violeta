@@ -1,0 +1,16 @@
+
+# Flutter / Dart
+violetaapp/.dart_tool/
+violetaapp/build/
+violetaapp/ios/Flutter/ephemeral/
+violetaapp/android/.gradle/
+
+# Python / Flask
+violetaapp/venv/
+__pycache__/
+*.pyc
+
+# IDE
+*.iml
+.idea/
+

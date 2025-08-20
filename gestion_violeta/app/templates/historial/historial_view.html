@@ -1,0 +1,72 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Historial</h2>
+
+    <!-- Formulario nuevo historial -->
+    <form action="{{ url_for('historial.nuevo_historial') }}" method="POST" class="mb-4">
+        <div class="row g-2">
+            <div class="col"><input name="idtarea" class="form-control" placeholder="ID Tarea" required></div>
+            <div class="col"><input name="idusuario" class="form-control" placeholder="ID Usuario" required></div>
+            <div class="col"><input type="date" name="fecha" class="form-control" required></div>
+            <div class="col"><input name="descripcion" class="form-control" placeholder="Descripción" required></div>
+            <div class="col"><input name="estado_anterior" class="form-control" placeholder="Estado Anterior"></div>
+            <div class="col"><input name="estado_nuevo" class="form-control" placeholder="Estado Nuevo"></div>
+            <div class="col"><input name="idadjunto" class="form-control" placeholder="ID Adjunto"></div>
+            <div class="col"><button type="submit" class="btn btn-success w-100">Agregar</button></div>
+        </div>
+    </form>
+
+    <!-- Tabla -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>ID Tarea</th>
+                <th>ID Usuario</th>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Estado Anterior</th>
+                <th>Estado Nuevo</th>
+                <th>ID Adjunto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for h in historiales %}
+            <tr>
+                <td>{{ h.idhistorial }}</td>
+                <td>{{ h.idtarea }}</td>
+                <td>{{ h.idusuario }}</td>
+                <td>{{ h.fecha }}</td>
+                <td>{{ h.descripcion }}</td>
+                <td>{{ h.estado_anterior }}</td>
+                <td>{{ h.estado_nuevo }}</td>
+                <td>{{ h.idadjunto }}</td>
+                <td>
+                    <!-- Editar -->
+                    <form action="{{ url_for('historial.editar_historial', idhistorial=h.idhistorial) }}" method="POST" class="d-inline">
+                        <input type="hidden" name="idtarea" value="{{ h.idtarea }}">
+                        <input type="hidden" name="idusuario" value="{{ h.idusuario }}">
+                        <input type="hidden" name="fecha" value="{{ h.fecha }}">
+                        <input type="hidden" name="descripcion" value="{{ h.descripcion }}">
+                        <input type="hidden" name="estado_anterior" value="{{ h.estado_anterior }}">
+                        <input type="hidden" name="estado_nuevo" value="{{ h.estado_nuevo }}">
+                        <input type="hidden" name="idadjunto" value="{{ h.idadjunto }}">
+                        <button class="btn btn-warning btn-sm">Editar</button>
+                    </form>
+                    <!-- Eliminar -->
+                    <form action="{{ url_for('historial.eliminar_historial_view', idhistorial=h.idhistorial) }}" method="POST" class="d-inline">
+                        <button class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este historial?')">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-center">No hay registros</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

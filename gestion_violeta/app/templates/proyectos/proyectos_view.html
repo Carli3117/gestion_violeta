@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Proyectos | Violeta Workspace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <style>
+      :root {
+        --violeta-main: #7C3AED;
+        --violeta-dark: #512da8;
+        --violeta-light: #ede9fe;
+        --gris: #f7f7fb;
+        --gris2: #ececec;
+        --texto: #23243a;
+        --white: #fff;
+        --shadow: #a091df3b;
+      }
+      body {
+        margin: 0;
+        background: var(--gris);
+        font-family: 'Segoe UI', 'Inter', 'Roboto', sans-serif;
+        color: var(--texto);
+        min-height: 100vh;
+      }
+      .main-container {
+        max-width: 850px;
+        margin: 2.3rem auto 0 auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 28px #b6a3f51c;
+        padding: 1.5rem 1.2rem 1.6rem 1.2rem;
+        animation: fadeInMain .7s .08s backwards;
+      }
+      @keyframes fadeInMain { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:none;} }
+      .proyectos-header {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 1.5rem;
+        gap:1.2em;
+      }
+      .proyectos-header h2 {
+        margin: 0;
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--violeta-main);
+        display:flex;align-items:center;gap:.35em;
+        letter-spacing:.01em;
+        opacity:0;
+        animation: fadeInTitle .53s .15s forwards;
+      }
+      @keyframes fadeInTitle { to{opacity:1;} }
+      .btn-violeta {
+        background: var(--violeta-main);
+        color: #fff;
+        border: none;
+        padding: .48em 1.1em;
+        border-radius: 9px;
+        font-weight: 600;
+        font-size: 1em;
+        cursor: pointer;
+        box-shadow: 0 2px 10px var(--shadow);
+        display: flex; align-items: center; gap: .5em;
+        transition: background .16s, transform .14s;
+        opacity:0;animation:fadeInBtn .49s .25s forwards;
+      }
+      @keyframes fadeInBtn {to{opacity:1;}}
+      .btn-violeta:hover { background: var(--violeta-dark); transform:scale(1.04);}
+      .btn-return {
+        margin-bottom: .7em;
+        background: #f5f0fc;
+        color: var(--violeta-main);
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: .5em;
+        padding: .33em 1em;
+        box-shadow: 0 1px 8px #e6e3f9;
+        transition: background .18s, color .13s, box-shadow .18s;
+        position: relative;
+        left: -5px;
+      }
+      .btn-return:hover {
+        background: var(--violeta-light);
+        color: var(--violeta-dark);
+        box-shadow: 0 3px 14px #dad3f8;
+        transform: translateX(-3px) scale(1.04);
+      }
+      .tabla-proyectos {
+        width: 100%; border-collapse: collapse; background: #fafaff;
+        border-radius: 10px; overflow: hidden;
+        margin-top: .2rem;
+        box-shadow: 0 1px 6px #c4b1e527;
+        font-size: .97em;
+      }
+      .tabla-proyectos th, .tabla-proyectos td {
+        padding: .57em .7em;
+        text-align: left;
+        border-bottom: 1px solid #f1e8fa;
+      }
+      .tabla-proyectos th {
+        background: var(--violeta-light); color: var(--violeta-dark); font-weight:700;
+        font-size:1em;letter-spacing:.01em;
+      }
+      .tabla-proyectos tr:last-child td { border-bottom: none; }
+      .tabla-proyectos td { vertical-align: middle; }
+      .tabla-proyectos tr {
+        opacity:0; transform:translateY(24px) scale(.98);
+        animation: fadeInRow .52s cubic-bezier(.7,1.5,.4,1.05) forwards;
+      }
+      .tabla-proyectos tr:nth-child(n) {animation-delay:.13s;}
+      .tabla-proyectos tr:nth-child(2) {animation-delay:.16s;}
+      .tabla-proyectos tr:nth-child(3) {animation-delay:.20s;}
+      .tabla-proyectos tr:nth-child(4) {animation-delay:.25s;}
+      .tabla-proyectos tr:nth-child(5) {animation-delay:.28s;}
+      .tabla-proyectos tr:nth-child(6) {animation-delay:.33s;}
+      @keyframes fadeInRow { to{opacity:1;transform:none;} }
+      .badge-id {
+        background: #ede9fe;
+        color: var(--violeta-main);
+        padding: .13em .55em;
+        font-weight: 700;
+        border-radius: 13px;
+        font-size: .93em;
+        margin-right: .1em;
+      }
+      .badge-fecha {
+        background: #fff3f8;
+        color: #9d28c8;
+        padding: .14em .5em;
+        border-radius: 13px;
+        font-size: .88em;
+      }
+      .icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1em;
+        padding: .24em .38em;
+        margin: 0 .07em;
+        border-radius: 6px;
+        transition: background .13s, color .13s, transform .14s;
+      }
+      .icon-btn.editar:hover { background: #f5f1fc; color: var(--violeta-main);}
+      .icon-btn.eliminar:hover { background: #fde8ee; color: #f44336;}
+      .usuario-avatar {
+        width: 27px;height: 27px;
+        border-radius:50%;object-fit:cover;vertical-align:middle;
+        margin-right:.4em;border:2px solid #ede9fe;box-shadow:0 1px 5px #a093e834;
+      }
+      .modal-violeta {
+        display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(60,28,120,0.13); z-index: 1000;
+        align-items: center; justify-content: center;
+        animation: fadeInModal .27s;
+      }
+      @keyframes fadeInModal { from{opacity:0;} to{opacity:1;} }
+      .modal-violeta.mostrar { display: flex; }
+      .modal-contenido {
+        background: #fff;
+        padding: 1.2rem 1.3rem .9rem 1.3rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 28px #a08ce833;
+        min-width: 250px; max-width: 380px;
+        animation: modalPopIn .34s cubic-bezier(.8,2,.2,.9);
+        position:relative;
+      }
+      @keyframes modalPopIn {
+        from{opacity:.2;transform:scale(.88);}
+        to{opacity:1;transform:none;}
+      }
+      .modal-contenido h3 { margin-top: 0; color:var(--violeta-main); font-size: 1.2em;}
+      .modal-contenido input, .modal-contenido select {
+        width: 100%; margin: .2em 0 .8em 0; border: 1.2px solid #e0e0e7;
+        border-radius: 7px; padding: .62em 1em; font-size: 1em; background: #f8f8fe;
+        outline: none; transition: border .13s;
+      }
+      .modal-contenido input:focus, .modal-contenido select:focus {
+        border-color: var(--violeta-main);
+      }
+      .datepicker {
+        width: 100%!important;
+        min-width: 160px!important;
+        max-width: 220px!important;
+        margin:auto;
+        display: block;
+      }
+      .datepicker-dropdown {
+        min-width: 240px !important;
+        max-width: 280px !important;
+        width: 280px !important;
+        z-index: 3000 !important;
+      }
+      .modal-actions {
+        display: flex; justify-content: flex-end; gap: .6em; margin-top: .7em;
+      }
+      .modal-actions button {
+        background: #e7e2f9; color: var(--violeta-dark);
+        border: none; border-radius: 7px; padding: .38em 1.1em;
+        font-weight: 600; font-size: .98em; cursor: pointer; transition: background .13s;
+      }
+      .modal-actions button.btn-violeta { background: var(--violeta-main); color: #fff; }
+      .modal-actions button:hover { background: #dad2f6;}
+      /* Toast custom */
+      .toast-violeta {
+        position: fixed;
+        bottom: 22px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        background: var(--violeta-main);
+        color: #fff;
+        padding: .93em 2.1em .93em 1.3em;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px #7c3aed36;
+        font-size: 1.06em;
+        font-weight: 600;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .33s, bottom .27s;
+      }
+      .toast-violeta.show {
+        opacity: 1;
+        bottom: 45px;
+        pointer-events: auto;
+      }
+      @media (max-width: 600px) {
+        .main-container {padding:.45rem;}
+        .proyectos-header h2{font-size:.95em;}
+      }
+    </style>
+</head>
+<body>
+<div class="main-container">
+  <a href="{{ url_for('usuario.dashboard') }}" class="btn-return mb-2">
+    <i class="bi bi-arrow-left"></i> Volver al Dashboard
+  </a>
+  <div class="proyectos-header">
+    <h2><i class="bi bi-kanban"></i> Proyectos</h2>
+    <button class="btn-violeta" onclick="abrirNuevoProyecto()">
+      <i class="bi bi-plus-circle"></i> Nuevo Proyecto
+    </button>
+  </div>
+  <table class="tabla-proyectos">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Usuario</th>
+        <th>Fecha de creación</th>
+        <th>Logo</th>
+        <th style="text-align:center;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for proyecto in proyectos %}
+      <tr>
+        <td><span class="badge-id">{{ proyecto.idproyecto }}</span></td>
+        <td>{{ proyecto.nombre_proyecto }}</td>
+        <td>
+          {% for usuario in usuarios %}
+            {% if usuario.idusuario == proyecto.idusuario %}
+              <img src="{{ usuario.foto or url_for('static', filename='img/user-default.png') }}" alt="avatar" class="usuario-avatar">
+              {{ usuario.nombre }}
+            {% endif %}
+          {% endfor %}
+        </td>
+        <td><span class="badge-fecha">{{ proyecto.fecha_creacion.strftime('%d/%m/%Y') if proyecto.fecha_creacion else '' }}</span></td>
+        <td>
+          {% if proyecto.logoproyecto %}
+            <img src="{{ proyecto.logoproyecto }}" alt="Logo" style="height:27px;width:27px;border-radius:6px;box-shadow:0 1px 4px #e6e1fd;">
+          {% else %}
+            <span style="color:#b1a6d9;font-size:1.11em;">—</span>
+          {% endif %}
+        </td>
+        <td style="text-align:center;">
+          <!-- BOTÓN EDITAR: modal solo si NO tiene tareas -->
+          <button type="button" class="icon-btn editar"
+              onclick="editarProyecto(
+                {{ proyecto.idproyecto }},
+                '{{ proyecto.nombre_proyecto|escape }}',
+                '{{ proyecto.idusuario }}',
+                '{{ proyecto.fecha_creacion }}',
+                {{ proyecto.tareas|length }}
+              )"
+              title="Editar">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <!-- BOTÓN ELIMINAR: muestra toast si tiene tareas -->
+          <form method="POST"
+                action="{{ url_for('proyecto.eliminar_proyecto_view', idproyecto=proyecto.idproyecto) }}"
+                style="display:inline;" onsubmit="return eliminarProyecto(this, {{ proyecto.tareas|length }})">
+              <button type="submit" class="icon-btn eliminar" title="Eliminar">
+                <i class="bi bi-trash"></i>
+              </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- MODAL NUEVO PROYECTO -->
+<div id="modalNuevoProyecto" class="modal-violeta">
+  <div class="modal-contenido">
+    <h3>Nuevo Proyecto</h3>
+    <form method="post" action="{{ url_for('proyecto.nuevo_proyecto') }}">
+      <input type="text" name="nombre_proyecto" placeholder="Nombre del proyecto" required>
+      <select name="idusuario" required>
+        <option value="">Responsable</option>
+        {% for usuario in usuarios %}
+        <option value="{{ usuario.idusuario }}">{{ usuario.nombre }}</option>
+        {% endfor %}
+      </select>
+      <div class="mb-3" style="text-align:center;">
+        <input type="text" class="form-control datepicker" name="fecha_creacion"
+               autocomplete="off" placeholder="Fecha de creación" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" onclick="cerrarModalNuevoProyecto()">Cancelar</button>
+        <button type="submit" class="btn-violeta">Crear</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL EDITAR PROYECTO -->
+<div id="modalEditarProyecto" class="modal-violeta">
+  <div class="modal-contenido">
+    <h3>Editar Proyecto</h3>
+    <form id="formEditarProyecto" method="post">
+      <input type="hidden" name="idproyecto" id="editar_idproyecto">
+      <input type="text" name="nombre_proyecto" id="editar_nombre" placeholder="Nombre del proyecto" required>
+      <select name="idusuario" id="editar_idusuario" required>
+        <option value="">Responsable</option>
+        {% for usuario in usuarios %}
+        <option value="{{ usuario.idusuario }}">{{ usuario.nombre }}</option>
+        {% endfor %}
+      </select>
+      <div class="mb-3" style="text-align:center;">
+        <input type="text" class="form-control datepicker" name="fecha_creacion"
+               id="editar_fecha_creacion" autocomplete="off" placeholder="Fecha de creación" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" onclick="cerrarModalEditarProyecto()">Cancelar</button>
+        <button type="submit" class="btn-violeta">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast Mensaje -->
+<div id="toastVioleta" class="toast-violeta"></div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/locales/bootstrap-datepicker.es.min.js"></script>
+<script>
+  function abrirNuevoProyecto() {
+    document.getElementById('modalNuevoProyecto').classList.add('mostrar');
+    setTimeout(function(){
+      var modal = document.getElementById('modalNuevoProyecto');
+      if(modal) modal.querySelector('input[name="nombre_proyecto"]').focus();
+    }, 140);
+  }
+  function cerrarModalNuevoProyecto() {
+    document.getElementById('modalNuevoProyecto').classList.remove('mostrar');
+  }
+
+  function cerrarModalEditarProyecto() {
+    document.getElementById('modalEditarProyecto').classList.remove('mostrar');
+  }
+
+  // Cerrar modal solo si NO es el datepicker ni sus hijos
+  document.addEventListener('mousedown', function(e) {
+    var modal1 = document.getElementById('modalNuevoProyecto');
+    var modal2 = document.getElementById('modalEditarProyecto');
+    var datepickerOpen = document.querySelector('.datepicker-dropdown');
+    if (
+      (modal1 && modal1.classList.contains('mostrar') && !e.target.closest('.modal-contenido')) ||
+      (modal2 && modal2.classList.contains('mostrar') && !e.target.closest('.modal-contenido'))
+    ) {
+      if (!(datepickerOpen && datepickerOpen.contains(e.target))) {
+        cerrarModalNuevoProyecto();
+        cerrarModalEditarProyecto();
+      }
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key==="Escape") {
+      cerrarModalNuevoProyecto();
+      cerrarModalEditarProyecto();
+    }
+  });
+
+  // Inicializa datepicker en español y ajustado
+  $(function(){
+    $('.datepicker').datepicker({
+      format: 'yyyy-mm-dd',
+      language: 'es',
+      autoclose: true,
+      todayHighlight: true,
+      orientation: 'bottom left'
+    });
+  });
+
+  // TOAST
+  function showToastVioleta(msg) {
+    var toast = document.getElementById('toastVioleta');
+    toast.innerHTML = msg;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 2700);
+  }
+
+  // Editar
+  function editarProyecto(id, nombre, idusuario, fecha, tareasCount) {
+    if (tareasCount > 0) {
+      showToastVioleta("No puedes editar este proyecto porque tiene tareas o actividades asignadas.");
+      return false;
+    }
+    // Abre modal y rellena valores
+    $('#editar_idproyecto').val(id);
+    $('#editar_nombre').val(nombre);
+    $('#editar_idusuario').val(idusuario);
+    $('#editar_fecha_creacion').val(fecha);
+    $('#modalEditarProyecto').addClass('mostrar');
+
+    // Set action dinámica (Flask route)
+    $('#formEditarProyecto').attr('action', '/proyectos/editar/' + id);
+    setTimeout(function(){
+      $('#editar_nombre').focus();
+    }, 140);
+    return true;
+  }
+
+  // Eliminar
+  function eliminarProyecto(form, tareasCount) {
+    if (tareasCount > 0) {
+      showToastVioleta("No puedes eliminar este proyecto porque tiene tareas o actividades asignadas.");
+      return false;
+    }
+    return confirm("¿Eliminar este proyecto?");
+  }
+</script>
+</body>
+</html>
